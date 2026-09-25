@@ -416,6 +416,10 @@
 .mini-tokyo-3d .station-panel.station-from {
     height: 230px;
 }
+.mini-tokyo-3d .station-panel.behind-modal {
+    visibility: hidden;
+    transition: visibility 0s linear 300ms;
+}
 .mini-tokyo-3d .station-panel.collapsed {
     height: 93px;
 }
@@ -591,6 +595,233 @@
     height: 30px;
     vertical-align: middle;
 }
+.mini-tokyo-3d .railway-title-strip {
+    width: 10px;
+    height: 18px;
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.mini-tokyo-3d .popup-railway .mapboxgl-popup-content,
+.mini-tokyo-3d .popup-boulangerie .mapboxgl-popup-content,
+.mini-tokyo-3d .popup-biryani .mapboxgl-popup-content {
+    max-width: 320px;
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 18px;
+}
+.mini-tokyo-3d .railway-popup-title,
+.mini-tokyo-3d .boulangerie-popup-title,
+.mini-tokyo-3d .biryani-popup-title {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+.mini-tokyo-3d .railway-fact,
+.mini-tokyo-3d .boulangerie-fact,
+.mini-tokyo-3d .biryani-fact {
+    display: flex;
+    gap: 8px;
+}
+.mini-tokyo-3d .railway-fact-label,
+.mini-tokyo-3d .boulangerie-fact-label,
+.mini-tokyo-3d .biryani-fact-label {
+    flex: 0 0 auto;
+    min-width: 64px;
+    color: #aaa;
+}
+.mini-tokyo-3d .railway-fact-note,
+.mini-tokyo-3d .boulangerie-fact-note,
+.mini-tokyo-3d .biryani-fact-note {
+    color: #aaa;
+}
+.mini-tokyo-3d .railway-history-panel .railway-facts {
+    margin: 4px 0 10px 0;
+}
+.mini-tokyo-3d .railway-popup-history {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #555;
+}
+.mini-tokyo-3d .railway-popup-history .history-bullet-list {
+    margin: 0;
+    padding-left: 16px;
+}
+.mini-tokyo-3d .railway-popup-history .history-bullet-list li {
+    margin: 3px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.mini-tokyo-3d .railway-popup-history .history-source {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+}
+.mini-tokyo-3d .railway-popup-hint {
+    margin-top: 6px;
+    color: #33B5E5;
+}
+.mini-tokyo-3d .boulangerie-fact-label,
+.mini-tokyo-3d .biryani-fact-label {
+    min-width: 92px;
+}
+.mini-tokyo-3d .boulangerie-area,
+.mini-tokyo-3d .biryani-area {
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: normal;
+    color: #aaa;
+}
+.mini-tokyo-3d .boulangerie-marker {
+    position: relative;
+    width: 32px;
+    height: 44px;
+    cursor: pointer;
+}
+.mini-tokyo-3d .boulangerie-marker .boulangerie-flag {
+    position: relative;
+    display: block;
+    transform-origin: 50% 100%;
+    transition: transform 150ms;
+}
+.mini-tokyo-3d .boulangerie-marker:hover .boulangerie-flag {
+    transform: scale(1.2);
+}
+.mini-tokyo-3d .boulangerie-halo {
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 52px;
+    height: 52px;
+    margin-left: -26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 85, 164, 0.45) 0%, rgba(255, 255, 255, 0.35) 45%, rgba(239, 65, 53, 0.35) 65%, rgba(239, 65, 53, 0) 72%);
+    animation: boulangerie-pulse 2.4s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes boulangerie-pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+.mini-tokyo-3d .boulangerie-title-flag {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.mini-tokyo-3d .boulangerie-title-flag .boulangerie-flag {
+    display: block;
+    width: 18px;
+    height: 24px;
+}
+.mini-tokyo-3d .biryani-marker {
+    position: relative;
+    width: 40px;
+    height: 44px;
+    cursor: pointer;
+}
+.mini-tokyo-3d .biryani-marker .biryani-flag {
+    position: relative;
+    display: block;
+    transform-origin: 50% 100%;
+    transition: transform 150ms;
+}
+.mini-tokyo-3d .biryani-marker:hover .biryani-flag {
+    transform: scale(1.2);
+}
+.mini-tokyo-3d .biryani-halo {
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 52px;
+    height: 52px;
+    margin-left: -26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 153, 51, 0.5) 0%, rgba(255, 255, 255, 0.35) 45%, rgba(19, 136, 8, 0.4) 65%, rgba(19, 136, 8, 0) 72%);
+    animation: biryani-pulse 2.4s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes biryani-pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+.mini-tokyo-3d .biryani-title-flag {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.mini-tokyo-3d .biryani-title-flag .biryani-flag {
+    display: block;
+    width: 22px;
+    height: 24px;
+}
+.mini-tokyo-3d .boulangerie-panel .card-body p,
+.mini-tokyo-3d .biryani-panel .card-body p {
+    margin: 6px 0;
+}
+.mini-tokyo-3d .boulangerie-panel .boulangerie-fact,
+.mini-tokyo-3d .biryani-panel .biryani-fact {
+    margin: 4px 0 10px 0;
+}
+.mini-tokyo-3d .boulangerie-station-row,
+.mini-tokyo-3d .biryani-station-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 6px 0;
+}
+.mini-tokyo-3d .boulangerie-station-button,
+.mini-tokyo-3d .biryani-station-button {
+    flex: 0 0 auto;
+    height: 30px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px #777;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+}
+.mini-tokyo-3d .boulangerie-station-button:hover,
+.mini-tokyo-3d .biryani-station-button:hover {
+    background-color: rgba(51, 51, 51, 0.7);
+}
+.mini-tokyo-3d .history-bullet-list {
+    margin: 4px 0 10px 0;
+    padding-left: 18px;
+}
+.mini-tokyo-3d .history-bullet-list li {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+.mini-tokyo-3d .history-source {
+    margin: 10px 0;
+    font-size: 12px;
+    color: #aaa;
+}
+.mini-tokyo-3d .history-source a:link,
+.mini-tokyo-3d .history-source a:visited {
+    color: #f90;
+    text-decoration: none;
+}
+.mini-tokyo-3d .history-source a:hover,
+.mini-tokyo-3d .history-source a:active {
+    color: #f90;
+    text-decoration: underline;
+}
 .mini-tokyo-3d .exit-icon-box {
     background: no-repeat center left/20px svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/right-to-bracket.svg', fill: #fff);
     width: 26px;
@@ -747,6 +978,27 @@
     height: 17px;
     background: no-repeat center/17px svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/arrow-rotate-left.svg', fill: #fff);
 }
+.mini-tokyo-3d .history-button {
+    width: 39px;
+    height: 39px;
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px #777;
+    color: #fff;
+    background-color: transparent;
+    cursor: pointer;
+}
+.mini-tokyo-3d .history-button:hover {
+    background-color: rgba(51, 51, 51, 0.7);
+}
+.mini-tokyo-3d .history-icon {
+    display: block;
+    width: 100%;
+    height: 17px;
+    background: no-repeat center/17px svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/clock-rotate-left.svg', fill: #fff);
+}
 .mini-tokyo-3d #search-form {
     display: none;
 }
@@ -852,6 +1104,36 @@
 }
 .mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-eco-active .mapboxgl-ctrl-icon {
     background-image: svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/battery-three-quarters.svg', fill: #33B5E5);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-no-trains .mapboxgl-ctrl-icon {
+    background: no-repeat center/18px svg-load('../svg/train-slash.svg', fill: #333);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-no-trains-active .mapboxgl-ctrl-icon {
+    background-image: svg-load('../svg/train-slash.svg', fill: #33B5E5);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-map-only .mapboxgl-ctrl-icon {
+    background: no-repeat center/21px svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/map.svg', fill: #333);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-map-only-active .mapboxgl-ctrl-icon {
+    background-image: svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/map.svg', fill: #33B5E5);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-boulangerie .mapboxgl-ctrl-icon {
+    background: no-repeat center/26px svg-load('../svg/baguette.svg', fill: #333);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-boulangerie-active .mapboxgl-ctrl-icon {
+    background-image: svg-load('../svg/baguette.svg', fill: #33B5E5);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-biryani .mapboxgl-ctrl-icon {
+    background: no-repeat center/26px svg-load('../svg/biryani.svg', fill: #333);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-biryani-active .mapboxgl-ctrl-icon {
+    background-image: svg-load('../svg/biryani.svg', fill: #33B5E5);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-theme .mapboxgl-ctrl-icon {
+    background: no-repeat center/21px svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/moon.svg', fill: #333);
+}
+.mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-theme-active .mapboxgl-ctrl-icon {
+    background-image: svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/moon.svg', fill: #33B5E5);
 }
 .mini-tokyo-3d .mapboxgl-ctrl button.mapboxgl-ctrl-layers .mapboxgl-ctrl-icon {
     background: no-repeat center/21px svg-load('../../node_modules/@fortawesome/fontawesome-free/svgs/solid/layer-group.svg', fill: #333);
@@ -1161,4 +1443,122 @@
 .mini-tokyo-3d .swiper-pagination-bullet {
     background-color: #fff;
     pointer-events: auto;
+}
+
+/* Blue theme: deep-navy replacements for the overlay's neutral blacks, greys and whites */
+.mini-tokyo-3d.blue-theme .clock-ctrl,
+.mini-tokyo-3d.blue-theme .share-panel,
+.mini-tokyo-3d.blue-theme .notification,
+.mini-tokyo-3d.blue-theme .panel,
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-content {
+    background-color: rgba(8, 24, 56, 0.85);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group,
+.mini-tokyo-3d.blue-theme .ctrl-group {
+    background-color: rgba(9, 28, 64, 0.94);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group:not(:empty) {
+    box-shadow: 0 0 0 1px #2f5088;
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group button + button {
+    border-top-color: #2b4a80;
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group button:not(:disabled):hover,
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl.ctrl-group button:not(:disabled):hover,
+.mini-tokyo-3d.blue-theme .clock-ctrl button:not(:disabled):hover,
+.mini-tokyo-3d.blue-theme .share-button:hover,
+.mini-tokyo-3d.blue-theme .back-button:hover,
+.mini-tokyo-3d.blue-theme .history-button:hover,
+.mini-tokyo-3d.blue-theme .boulangerie-station-button:hover,
+.mini-tokyo-3d.blue-theme .biryani-station-button:hover,
+.mini-tokyo-3d.blue-theme .page-controller button:not(:disabled):hover,
+.mini-tokyo-3d.blue-theme .search-input:hover,
+.mini-tokyo-3d.blue-theme .search-select:hover,
+.mini-tokyo-3d.blue-theme .search-button:not(:disabled):hover,
+.mini-tokyo-3d.blue-theme .station-content-selector label:hover,
+.mini-tokyo-3d.blue-theme .layer-icon:hover,
+.mini-tokyo-3d.blue-theme .tracking-mode-icon:hover {
+    background-color: rgba(48, 92, 168, 0.55);
+}
+.mini-tokyo-3d.blue-theme .station-row:hover,
+.mini-tokyo-3d.blue-theme .busstop-row:hover,
+.mini-tokyo-3d.blue-theme .train-row:hover,
+.mini-tokyo-3d.blue-theme .exit-row:hover,
+.mini-tokyo-3d.blue-theme .highlighted .mapboxgl-popup-content {
+    background-color: rgba(48, 92, 168, 0.6);
+}
+.mini-tokyo-3d.blue-theme .card-title {
+    background: rgba(24, 54, 108, 0.75);
+}
+.mini-tokyo-3d.blue-theme .card-body {
+    border-color: rgba(24, 54, 108, 0.75);
+}
+.mini-tokyo-3d.blue-theme .spin-box,
+.mini-tokyo-3d.blue-theme .clock-button button,
+.mini-tokyo-3d.blue-theme .speed-controller,
+.mini-tokyo-3d.blue-theme .share-button,
+.mini-tokyo-3d.blue-theme .station-content-selector,
+.mini-tokyo-3d.blue-theme .boulangerie-station-button,
+.mini-tokyo-3d.blue-theme .biryani-station-button,
+.mini-tokyo-3d.blue-theme .page-controller,
+.mini-tokyo-3d.blue-theme .back-button,
+.mini-tokyo-3d.blue-theme .history-button,
+.mini-tokyo-3d.blue-theme .search-button {
+    box-shadow: 0 0 0 1px #4a6aa3;
+}
+.mini-tokyo-3d.blue-theme .search-input,
+.mini-tokyo-3d.blue-theme .search-select,
+.mini-tokyo-3d.blue-theme .layer-icon,
+.mini-tokyo-3d.blue-theme .tracking-mode-icon {
+    border-color: #4a6aa3;
+}
+.mini-tokyo-3d.blue-theme .layer-icon-enabled,
+.mini-tokyo-3d.blue-theme .tracking-mode-icon-enabled {
+    border-color: #33B5E5;
+}
+.mini-tokyo-3d.blue-theme .railway-fact-label,
+.mini-tokyo-3d.blue-theme .boulangerie-fact-label,
+.mini-tokyo-3d.blue-theme .biryani-fact-label,
+.mini-tokyo-3d.blue-theme .railway-fact-note,
+.mini-tokyo-3d.blue-theme .boulangerie-fact-note,
+.mini-tokyo-3d.blue-theme .biryani-fact-note,
+.mini-tokyo-3d.blue-theme .boulangerie-area,
+.mini-tokyo-3d.blue-theme .biryani-area,
+.mini-tokyo-3d.blue-theme .history-source {
+    color: #9db4d8;
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+    border-bottom-color: rgba(8, 24, 56, 0.85);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+    border-top-color: rgba(8, 24, 56, 0.85);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    border-right-color: rgba(8, 24, 56, 0.85);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    border-left-color: rgba(8, 24, 56, 0.85);
+}
+/* The control icons are dark glyphs baked into the images, so lighten them; the
+   light-blue "on" icons are already visible on navy and stay as they are */
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
+    filter: invert(0.88);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group button[class*="-active"] .mapboxgl-ctrl-icon,
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-group button.mapboxgl-ctrl-underground-visible .mapboxgl-ctrl-icon {
+    filter: none;
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-attrib,
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-attrib.mapboxgl-compact {
+    background-color: rgba(8, 24, 56, 0.7);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-attrib a {
+    color: rgba(255, 255, 255, 0.8);
+}
+.mini-tokyo-3d.blue-theme .mapboxgl-ctrl-attrib-button {
+    filter: invert(1);
 }

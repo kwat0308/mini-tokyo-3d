@@ -10,6 +10,8 @@ import operators from './operators';
 import airports from './airports';
 import flightStatuses from './flight-statuses';
 import poi from './poi';
+import railwayInfo from './railway-info';
+import stationInfo from './station-info';
 
 async function main() {
 
@@ -27,6 +29,8 @@ async function main() {
     airports();
     flightStatuses();
     poi();
+    railwayInfo();
+    stationInfo();
 
 }
 

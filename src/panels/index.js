@@ -1,8 +1,12 @@
 export {default as AboutPanel} from './about-panel';
+export {default as BiryaniPanel} from './biryani-panel';
+export {default as BoulangeriePanel} from './boulangerie-panel';
 export {default as BusPanel} from './bus-panel';
 export {default as LayerPanel} from './layer-panel';
 export {default as Panel} from './panel';
+export {default as RailwayPanel} from './railway-panel';
 export {default as SharePanel} from './share-panel';
+export {default as StationHistoryPanel} from './station-history-panel';
 export {default as StationPanel} from './station-panel';
 export {default as TrackingModePanel} from './tracking-mode-panel';
 export {default as TrainPanel} from './train-panel';

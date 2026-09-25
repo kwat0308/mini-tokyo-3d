@@ -5,8 +5,9 @@ const WIKIPEDIA_PARAMS = 'format=json&action=query&prop=pageimages&pithumbsize=2
 
 export default async function() {
 
-    const [stationGroupData, data] = await Promise.all([
+    const [stationGroupData, stationHistoryData, data] = await Promise.all([
         'data/station-groups.json',
+        'data/station-history.json',
         'data/stations.json',
     ].map(loadJSON));
 
@@ -21,9 +22,13 @@ export default async function() {
     }
     for (const station of data) {
         const {id, altitude} = station,
-            stationGroupID = stationGroupIDLookup[id];
+            stationGroupID = stationGroupIDLookup[id],
+            history = stationHistoryData[stationGroupID || id];
 
         station.group = `${stationGroupID || id}.${altitude < 0 ? 'ug' : 'og'}`;
+        if (history) {
+            station.history = history;
+        }
     }
 
     const stationLists = [[]];

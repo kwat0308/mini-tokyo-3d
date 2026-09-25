@@ -25,8 +25,28 @@ export default class {
         me.glowPipeline = new GlowPipeline();
         me.markedInstanceID = -1;
         me.trackedInstanceID = -1;
+        me.trainVisible = true;
 
         me.onCameraChanged = me.onCameraChanged.bind(me);
+    }
+
+    /**
+     * Shows or hides the trains (aircraft and buses are not affected). Hidden
+     * trains are also excluded from picking.
+     * @param {boolean} visible - Whether the trains are displayed
+     */
+    setTrainVisibility(visible) {
+        const me = this;
+
+        me.trainVisible = visible;
+        if (me.ugCarMeshSet) {
+            for (const meshSet of [me.ugCarMeshSet, me.ogCarMeshSet]) {
+                meshSet.getMesh().visible = visible;
+                meshSet.getDelayMarkerMesh().visible = visible;
+                meshSet.getOutlineMesh().visible = visible;
+                meshSet.getPickingMesh().visible = visible;
+            }
+        }
     }
 
     getGlowPipeline() {
@@ -92,6 +112,8 @@ export default class {
 
         map.on('zoom', me.onCameraChanged);
         map.on('pitch', me.onCameraChanged);
+
+        me.setTrainVisibility(me.trainVisible);
     }
 
     onRemove(map) {

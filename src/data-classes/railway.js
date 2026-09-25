@@ -6,6 +6,7 @@ export default class {
         status;
         text;
         suspended;
+        info; // Length, opening date and construction history (loaded lazily)
     */
 
     constructor(params, refs) {
@@ -55,6 +56,15 @@ export default class {
          * @type {string}
          */
         me.color = params.color;
+
+        if (params.history) {
+            /**
+             * Multilingual bullet-point history of the railway, plus source
+             * attribution. Only present for a curated subset of railways.
+             * @type {Object}
+             */
+            me.history = params.history;
+        }
 
         /**
          * Railway car composition.

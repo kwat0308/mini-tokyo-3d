@@ -1,0 +1,56 @@
+{
+ "ChibaMonorail.Line1": {
+  "ja": "千葉都市モノレール1号線"
+ },
+ "JR-East.KeihinTohokuNegishi": {
+  "ja": "京浜東北線"
+ },
+ "JR-East.NambuBranch": {
+  "ja": "南武線"
+ },
+ "JR-East.NaritaAbikoBranch": {
+  "ja": "成田線"
+ },
+ "JR-East.NaritaAirportBranch": {
+  "ja": "成田線"
+ },
+ "JR-East.OsakiBranch": {
+  "ja": "大崎支線"
+ },
+ "JR-East.SaikyoKawagoe": {
+  "ja": "埼京線"
+ },
+ "JR-East.SuigunBranch": {
+  "ja": "水郡線"
+ },
+ "JR-East.TsurumiOkawaBranch": {
+  "ja": "鶴見線"
+ },
+ "JR-East.TsurumiUmiShibauraBranch": {
+  "ja": "鶴見線"
+ },
+ "MIR.TsukubaExpress": {
+  "ja": "首都圏新都市鉄道つくばエクスプレス"
+ },
+ "SaitamaRailway.SaitamaRailway": {
+  "ja": "埼玉高速鉄道線"
+ },
+ "Sotetsu.SotetsuShinYokohama": {
+  "ja": "相鉄新横浜線"
+ },
+ "TamaMonorail.TamaMonorail": {
+  "ja": "多摩都市モノレール線"
+ },
+ "TokyoMetro.MarunouchiBranch": {
+  "ja": "東京メトロ丸ノ内線"
+ },
+ "UtsunomiyaLightRail.UtsunomiyaLightRail": {
+  "ja": "宇都宮ライトレール宇都宮芳賀ライトレール線"
+ },
+ "YokohamaSeaside.KanazawaSeaside": {
+  "ja": "横浜シーサイドライン金沢シーサイドライン"
+ },
+ "Yurikamome.Yurikamome": {
+  "ja": "ゆりかもめ東京臨海新交通臨海線"
+ }
+}

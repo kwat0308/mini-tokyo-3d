@@ -8,7 +8,7 @@ export default class {
 
     update(params, refs) {
         const me = this,
-            {railway, coord, utitle, thumbnail, exit, altitude, alternate, ascending, descending, group} = params;
+            {railway, coord, utitle, thumbnail, history, exit, altitude, alternate, ascending, descending, group} = params;
 
         /**
          * Station ID.
@@ -52,6 +52,15 @@ export default class {
              * @type {string}
              */
             me.thumbnail = thumbnail;
+        }
+
+        if (history) {
+            /**
+             * Multilingual bullet-point history of the station, plus source
+             * attribution. Only present for the stations that have a history.
+             * @type {Object}
+             */
+            me.history = history;
         }
 
         if (exit) {

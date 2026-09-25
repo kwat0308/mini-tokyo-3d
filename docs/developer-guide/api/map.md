@@ -126,6 +126,26 @@ Returns the map's geographical centerpoint.
 
 ---
 
+### **`getBiryaniVisibility()`**
+
+Returns whether the biryani restaurants are highlighted on the map.
+
+#### Returns
+
+[`boolean`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean): `true` if the biryani restaurant markers are shown.
+
+---
+
+### **`getBoulangerieVisibility()`**
+
+Returns whether the French bakeries are highlighted on the map.
+
+#### Returns
+
+[`boolean`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean): `true` if the bakery markers are shown.
+
+---
+
 ### **`getClockMode()`**
 
 Returns the current clock mode.
@@ -212,6 +232,16 @@ Returns the ID of the train or flight being tracked, or the array of the IDs of 
 
 ---
 
+### **`getTheme()`**
+
+Returns the current color theme.
+
+#### Returns
+
+[`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String): A string representing the current color theme. Either `'default'` or `'blue'`.
+
+---
+
 ### **`getTrackingMode()`**
 
 Returns the current tracking mode. See [here](../../user-guide/configuration.md#tracking-mode-settings) for details of the tracking modes.
@@ -223,6 +253,16 @@ Returns the current tracking mode. See [here](../../user-guide/configuration.md#
 ::: warning
 The tracking mode `'heading'` is deprecated and falls back to `'topback'`.
 :::
+
+---
+
+### **`getTransitMode()`**
+
+Returns the current transit display mode.
+
+#### Returns
+
+[`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String): A string representing the current transit display mode. Either `'normal'`, `'no-trains'` or `'map-only'`.
 
 ---
 
@@ -378,6 +418,34 @@ Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})
 
 ---
 
+### **`setBiryaniVisibility(visible)`**
+
+Shows or hides the biryani restaurant markers. Each marker is an Indian flag that shows the restaurant, its nearest station and the dishes it serves when hovered, and the full details when clicked.
+
+#### Parameters
+
+**`visible`** ([`boolean`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)) Whether the biryani restaurant markers are shown.
+
+#### Returns
+
+[`Map`](./map.md): Returns itself to allow for method chaining.
+
+---
+
+### **`setBoulangerieVisibility(visible)`**
+
+Shows or hides the French bakery markers. Each marker is a French flag that shows the bakery and its nearest station when hovered, and the full details when clicked.
+
+#### Parameters
+
+**`visible`** ([`boolean`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)) Whether the bakery markers are shown.
+
+#### Returns
+
+[`Map`](./map.md): Returns itself to allow for method chaining.
+
+---
+
 ### **`setClockMode(mode)`**
 
 Sets the clock mode. In the real-time clock mode (`'realtime'`), trains and airplanes are displayed on the map according to the actual operation at the current time. In the playback clock mode (`'playback'`), you can specify the time and the speed of time passing.
@@ -450,6 +518,20 @@ Sets the ID of the train or flight you want to track, or the station to select. 
 
 ---
 
+### **`setTheme(theme)`**
+
+Sets the color theme. In the default theme (`'default'`), the map lighting follows the time of day. In the blue theme (`'blue'`), the map is lit with a fixed deep-blue dark lighting at any time of day, and the controls, panels and popups are shown in dark blue.
+
+#### Parameters
+
+**`theme`** ([`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)) A string representing the color theme. Either `'default'` or `'blue'`.
+
+#### Returns
+
+[`Map`](./map.md): Returns itself to allow for method chaining.
+
+---
+
 ### **`setTrackingMode(mode)`**
 
 Sets the tracking mode. See [here](../../user-guide/configuration.md#tracking-mode-settings) for details of the tracking modes.
@@ -461,6 +543,20 @@ Sets the tracking mode. See [here](../../user-guide/configuration.md#tracking-mo
 ::: warning
 The tracking mode `'heading'` is deprecated and falls back to `'topback'`.
 :::
+
+#### Returns
+
+[`Map`](./map.md): Returns itself to allow for method chaining.
+
+---
+
+### **`setTransitMode(mode)`**
+
+Sets the transit display mode. In the normal mode (`'normal'`), everything is displayed. In the no-trains mode (`'no-trains'`), only the moving trains are hidden. In the map-only mode (`'map-only'`), the trains as well as the railway tracks and stations are hidden. Airplanes and buses are not affected.
+
+#### Parameters
+
+**`mode`** ([`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)) A string representing the transit display mode. Either `'normal'`, `'no-trains'` or `'map-only'`.
 
 #### Returns
 
@@ -813,6 +909,18 @@ Fired when a [`touchstart`](https://developer.mozilla.org/docs/Web/Events/touchs
 
 ---
 
+### **`theme`**
+
+Fired when the color theme is changed.
+
+**Type** [`Object`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+**`theme`** ([`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)): A string representing the new color theme. Either `'default'` or `'blue'`.
+
+---
+
 ### **`trackingmode`**
 
 Fired when the tracking mode is changed.
@@ -826,6 +934,18 @@ Fired when the tracking mode is changed.
 ::: warning
 The tracking mode `'heading'` is deprecated and falls back to `'topback'`.
 :::
+
+---
+
+### **`transitmode`**
+
+Fired when the transit display mode is changed.
+
+**Type** [`Object`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+**`mode`** ([`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)): A string representing the new transit display mode. Either `'normal'`, `'no-trains'` or `'map-only'`.
 
 ---
 

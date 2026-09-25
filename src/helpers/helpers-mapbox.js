@@ -29,6 +29,18 @@ const FOG_COLOR_STOPS = [
     {brightness: 0.4, color: [247, 251, 253, 0.9]} // hsla(200, 60%, 98%, 0.9) - day
 ];
 
+// Lighting of the blue theme, which replaces the time-of-day lighting with a fixed
+// deep-blue dark look. The ambient color multiplies every color on the map, so it
+// tints the whole scene blue, and it keeps the brightness low enough for the style
+// to pick its dark palette. There are no shadows (w is 0), as at night. The sky sun
+// (azimuth and angle from the zenith) is kept well below the horizon.
+const BLUE_THEME_LIGHT = {
+    ambient: {r: 12, g: 48, b: 118, i: .55},
+    directional: {r: 70, g: 92, b: 140, i: .5, w: 0},
+    sun: {azimuth: 210, altitude: 20}
+};
+const BLUE_THEME_SKY_SUN = [210, 120];
+
 /**
  * Returns the sunrise and sunset times for the local solar day that contains
  * the given time. SunCalc 2.x anchors getTimes to the UTC calendar day, so the
@@ -216,8 +228,10 @@ export function getFogNearFar(center, farPlane) {
  *     using the default transition. Otherwise it snaps instantly (the default),
  *     which suits continuous changes (move, realtime, time-lapse); a transition is
  *     only wanted when jumping to a specific time via the clock panel.
+ * @param {string} theme - The color theme. With 'blue', the fixed blue lighting is
+ *     used at any time of day. Otherwise the lighting follows the time.
  */
-export function setSunlight(map, time, shadowIntensity, shadowOnly, transition) {
+export function setSunlight(map, time, shadowIntensity, shadowOnly, transition, theme) {
     const center = map.getCenter(),
         {sunrise, sunset} = getSunTimes(center, time),
         // At high latitudes there may be no sunrise/sunset (polar day/night), in
@@ -375,6 +389,13 @@ export function setSunlight(map, time, shadowIntensity, shadowOnly, transition) 
         };
     }
 
+    const isBlueTheme = theme === 'blue',
+        skySun = isBlueTheme ? BLUE_THEME_SKY_SUN : [sunAzimuth, sunAltitude];
+
+    if (isBlueTheme) {
+        ({ambient, directional, sun} = BLUE_THEME_LIGHT);
+    }
+
     const shadowIntensityValue = directional.w * shadowIntensity;
 
     if (shadowOnly) {
@@ -421,7 +442,7 @@ export function setSunlight(map, time, shadowIntensity, shadowOnly, transition) 
         styleTransition.duration = duration;
     }
     if (map.getLayer('sky')) {
-        map.setPaintProperty('sky', 'sky-atmosphere-sun', [sunAzimuth, sunAltitude]);
+        map.setPaintProperty('sky', 'sky-atmosphere-sun', skySun);
     } else {
         // The 'sky' layer type will be phased out in a future release of Mapbox GL JS
         // (see https://docs.mapbox.com/style-spec/reference/layers/#sky). To avoid
@@ -446,7 +467,7 @@ export function setSunlight(map, time, shadowIntensity, shadowOnly, transition) 
                 'sky-type': 'atmosphere',
                 'sky-atmosphere-color': 'hsl(220, 100%, 70%)',
                 'sky-atmosphere-sun-intensity': 20,
-                'sky-atmosphere-sun': [sunAzimuth, sunAltitude]
+                'sky-atmosphere-sun': skySun
             }
         }, 'background');
     }

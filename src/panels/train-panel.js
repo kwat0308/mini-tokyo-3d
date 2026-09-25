@@ -1,4 +1,4 @@
-import {getTimeString, lerp} from '../helpers/helpers';
+import {createElement, getTimeString, lerp} from '../helpers/helpers';
 import Panel from './panel';
 
 export default class extends Panel {
@@ -85,6 +85,24 @@ export default class extends Panel {
                 '<svg id="railway-mark"></svg>',
                 '<svg id="train-mark"></svg>'
             ].join(''));
+
+        if (map.hasRailwayDetails(railway)) {
+            const historyButton = createElement('div', {
+                innerHTML: [
+                    '<button id="history-button" class="history-button">',
+                    '<span class="history-icon"></span>',
+                    '</button>'
+                ].join('')
+            });
+
+            historyButton.addEventListener('click', event => {
+                event.stopPropagation();
+            });
+            historyButton.querySelector('#history-button').addEventListener('click', () => {
+                map.showRailwayPanel(railway);
+            });
+            me.setButtons([historyButton]);
+        }
 
         const container = me._container,
             bodyElement = container.querySelector('#panel-body');

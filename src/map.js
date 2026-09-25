@@ -3,6 +3,8 @@ import {Evented, FullscreenControl, LngLat, Map as Mapbox, MercatorCoordinate, N
 import AnimatedPopup from 'mapbox-gl-animated-popup';
 import ActiveObjectLookup from './active-object-lookup';
 import animation from './animation';
+import biryaniPlaces from './biryani';
+import boulangeries from './boulangeries';
 import Clock from './clock';
 import configs from './configs';
 import {ClockControl, MapboxGLButtonControl, SearchControl} from './controls';
@@ -12,10 +14,14 @@ import extend from './extend';
 import * as helpers from './helpers/helpers';
 import {disableAutoHover, pickObject, resetCursor} from './helpers/helpers-deck';
 import * as helpersGeojson from './helpers/helpers-geojson';
+import {INDIA_FLAG_SVG, getBiryaniPopupHTML} from './helpers/helpers-biryani';
+import {FLAG_SVG, getBoulangeriePopupHTML} from './helpers/helpers-boulangerie';
+import {getHistoryHTML} from './helpers/helpers-history';
 import * as helpersMapbox from './helpers/helpers-mapbox';
 import {GeoJsonLayer, GlowCompositeLayer, STROKE_WIDTH_SCALE_STOPS, StationGlowLayer, ThreeLayer, Tile3DLayer, TrafficLayer, ZoomWidthScaleExtension} from './layers';
-import {isExpired, loadBusData, loadDictionary, loadDynamicBusData, loadDynamicFlightData, loadDynamicTrainData, loadStaticData, loadTimetableData, updateOdptUrl} from './loader';
-import {AboutPanel, BusPanel, LayerPanel, SharePanel, StationPanel, TrackingModePanel, TrainPanel} from './panels';
+import {isExpired, loadBusData, loadDictionary, loadDynamicBusData, loadDynamicFlightData, loadDynamicTrainData, loadRailwayInfo, loadStaticData, loadStationInfo, loadTimetableData, updateOdptUrl} from './loader';
+import Marker from './marker';
+import {AboutPanel, BiryaniPanel, BoulangeriePanel, BusPanel, LayerPanel, RailwayPanel, SharePanel, StationPanel, TrackingModePanel, TrainPanel} from './panels';
 import Plugin from './plugin';
 import nearestCloserPointOnLine from './turf/nearest-closer-point-on-line';
 
@@ -105,6 +111,12 @@ export default class extends Evented {
 
         me.searchMode = 'none';
         me.viewMode = configs.defaultViewMode;
+        me.transitMode = 'normal';
+        me.boulangerieVisible = false;
+        me.boulangerieMarkers = new Map();
+        me.biryaniVisible = false;
+        me.biryaniMarkers = new Map();
+        me.theme = 'default';
         me.trackingMode = options.trackingMode;
         me.trackingParams = {
             zoom: {},
@@ -181,7 +193,7 @@ export default class extends Evented {
                     Promise.resolve().then(() => {
                         const now = me.clock.getTime();
 
-                        helpersMapbox.setSunlight(me.map, now, me.viewMode === 'ground' ? 1 : 0);
+                        helpersMapbox.setSunlight(me.map, now, me.viewMode === 'ground' ? 1 : 0, false, false, me.theme);
                         me.lastSunlightCenter = me.map.getCenter();
                         me.lastSunlightTime = now;
                         me.lastSunlightRefresh = Date.now();
@@ -497,6 +509,102 @@ export default class extends Evented {
     }
 
     /**
+     * Returns the current transit display mode.
+     * @returns {string} Current transit display mode: 'normal', 'no-trains' or 'map-only'
+     */
+    getTransitMode() {
+        return this.transitMode;
+    }
+
+    /**
+     * Sets the transit display mode. 'normal' shows everything, 'no-trains' hides
+     * the moving trains only, and 'map-only' hides the trains as well as the
+     * railway tracks and stations.
+     * @param {string} mode - Transit display mode: 'normal', 'no-trains' or 'map-only'
+     * @returns {Map} Returns itself to allow for method chaining
+     */
+    setTransitMode(mode) {
+        const me = this;
+
+        if (me.initialized) {
+            me._setTransitMode(mode);
+        }
+        return me;
+    }
+
+    /**
+     * Returns whether the French bakeries are highlighted on the map.
+     * @returns {boolean} True if the bakeries are highlighted
+     */
+    getBoulangerieVisibility() {
+        return this.boulangerieVisible;
+    }
+
+    /**
+     * Shows or hides the French bakery markers. Each marker is a French flag
+     * that shows the bakery and its nearest station when hovered or clicked.
+     * @param {boolean} visible - Whether the bakeries are highlighted
+     * @returns {Map} Returns itself to allow for method chaining
+     */
+    setBoulangerieVisibility(visible) {
+        const me = this;
+
+        if (me.initialized) {
+            me._setBoulangerieVisibility(!!visible);
+        }
+        return me;
+    }
+
+    /**
+     * Returns whether the biryani restaurants are highlighted on the map.
+     * @returns {boolean} True if the restaurants are highlighted
+     */
+    getBiryaniVisibility() {
+        return this.biryaniVisible;
+    }
+
+    /**
+     * Shows or hides the biryani restaurant markers. Each marker is an Indian flag
+     * that shows the restaurant, its nearest station and what it serves when
+     * hovered or clicked.
+     * @param {boolean} visible - Whether the restaurants are highlighted
+     * @returns {Map} Returns itself to allow for method chaining
+     */
+    setBiryaniVisibility(visible) {
+        const me = this;
+
+        if (me.initialized) {
+            me._setBiryaniVisibility(!!visible);
+        }
+        return me;
+    }
+
+    /**
+     * Returns the current color theme.
+     * @returns {string} Current color theme: 'default' or 'blue'
+     */
+    getTheme() {
+        return this.theme;
+    }
+
+    /**
+     * Sets the color theme. In the blue theme ('blue'), the map is lit with a fixed
+     * deep-blue dark lighting at any time of day and the controls and panels are
+     * shown in dark blue. In the default theme ('default'), the lighting follows
+     * the time of day.
+     * @param {string} theme - The color theme: 'default' or 'blue'
+     * @returns {Map} Returns itself to allow for method chaining
+     */
+    setTheme(theme) {
+        const me = this;
+
+        if (me.initialized) {
+            me._setTheme(theme);
+        }
+        return me;
+    }
+
+    /**
      * Adds a layer to the map.
      * @param {Object | CustomLayerInterface | GeoJsonLayerInterface | ThreeLayerInterface | Tile3DLayerInterface} layer
      *     - The layer to add, conforming to either the Mapbox Style Specification's
@@ -689,12 +797,14 @@ export default class extends Evented {
             railDirections: me.railDirections
         });
         me.pois = new Dataset(POI, data.poiData);
+        me.loadRailwayInfo();
         me.stations.load(data.stationData, {
             stations: me.stations,
             railways: me.railways,
             railDirections: me.railDirections,
             pois: me.pois
         });
+        me.loadStationInfo();
 
         // Build feature lookup dictionary and update feature properties
         featureEach(me.featureCollection, feature => {
@@ -832,7 +942,7 @@ export default class extends Evented {
                     }[key1], {
                         'ug': {
                             opacity: .0625,
-                            pickable: key1 === 'stations',
+                            pickable: true,
                             metadata: {
                                 'mt3d:opacity-effect': true,
                                 'mt3d:opacity': 0.0625,
@@ -1087,9 +1197,41 @@ export default class extends Evented {
                 eventHandler() {
                     me._setEcoMode(me.ecoMode === 'eco' ? 'normal' : 'eco');
                 }
+            }, {
+                className: 'mapboxgl-ctrl-no-trains',
+                title: dict['hide-trains'],
+                eventHandler() {
+                    me._setTransitMode(me.transitMode === 'no-trains' ? 'normal' : 'no-trains');
+                }
+            }, {
+                className: 'mapboxgl-ctrl-map-only',
+                title: dict['hide-transit'],
+                eventHandler() {
+                    me._setTransitMode(me.transitMode === 'map-only' ? 'normal' : 'map-only');
+                }
+            }, {
+                className: 'mapboxgl-ctrl-boulangerie',
+                title: dict['show-boulangeries'],
+                eventHandler() {
+                    me._setBoulangerieVisibility(!me.boulangerieVisible);
+                }
+            }, {
+                className: 'mapboxgl-ctrl-biryani',
+                title: dict['show-biryani'],
+                eventHandler() {
+                    me._setBiryaniVisibility(!me.biryaniVisible);
+                }
             }]);
 
             map.addControl(control);
+
+            map.addControl(new MapboxGLButtonControl([{
+                className: 'mapboxgl-ctrl-theme',
+                title: dict['enter-blue-theme'],
+                eventHandler() {
+                    me._setTheme(me.theme === 'blue' ? 'default' : 'blue');
+                }
+            }]), 'bottom-right');
         }
 
         me.layerPanel = new LayerPanel({layers: me.plugins});
@@ -1126,18 +1268,28 @@ export default class extends Evented {
         }
 
         map.on('mousemove', e => {
-            me.markObject(me.pickObject(e.point));
+            const object = me.pickObject(e.point);
+
+            // The railway hover has to go first: it resets the cursor when it ends,
+            // which would otherwise cancel the pointer cursor set for a marked object
+            me.hoverRailway(object ? undefined : me.pickRailway(e.point), e.lngLat);
+            me.markObject(object);
         });
 
         map.on('mouseout', () => {
+            me.hoverRailway();
             me.markObject();
         });
 
         map.on('click', e => {
-            const object = me.pickObject(e.point);
+            const object = me.pickObject(e.point),
+                railway = object ? undefined : me.pickRailway(e.point);
 
             me.markObject(object);
             me.trackObject(object);
+            if (railway && me.hasRailwayDetails(railway)) {
+                me.showRailwayPanel(railway);
+            }
 
             // For development
             console.log(e.lngLat);
@@ -1158,7 +1310,7 @@ export default class extends Evented {
             if (prevLayerZoom !== layerZoom) {
                 for (const key of ['railways', 'stations', 'stations-outline']) {
                     me.setLayerVisibility(`${key}-og-${prevLayerZoom}`, 'none');
-                    me.setLayerVisibility(`${key}-og-${layerZoom}`, 'visible');
+                    me.setLayerVisibility(`${key}-og-${layerZoom}`, me.transitMode === 'map-only' ? 'none' : 'visible');
                 }
 
                 // The station glow's feature is a single zoom bucket's
@@ -1266,7 +1418,7 @@ export default class extends Evented {
                     // margin keeps it snapping at any speed.
                     const transition = moved || Math.abs(now - me.lastSunlightTime) >= clock.speed * elapsed * 2;
 
-                    helpersMapbox.setSunlight(map, now, me.viewMode === 'ground' ? 1 : 0, false, transition);
+                    helpersMapbox.setSunlight(map, now, me.viewMode === 'ground' ? 1 : 0, false, transition, me.theme);
                     me.lastSunlightCenter = center;
                     me.lastSunlightTime = now;
                     me.lastSunlightRefresh = Date.now();
@@ -2993,7 +3145,7 @@ export default class extends Evented {
             factorKey = `mt3d:opacity${isUndergroundMode ? '-underground' : ''}`;
 
         helpersMapbox.setStyleOpacities(map, me.styleOpacities, isNotSearchResultMode ? factorKey : [`${factorKey}-route`, factorKey]);
-        helpersMapbox.setSunlight(map, me.clock.getTime(), isUndergroundMode ? 0 : 1, true);
+        helpersMapbox.setSunlight(map, me.clock.getTime(), isUndergroundMode ? 0 : 1, true, false, me.theme);
         me.setLayerVisibility('hd-area', isUndergroundMode ? 'none' : 'visible');
         me.setLayerVisibility('hd-elevated-area', isUndergroundMode ? 'none' : 'visible');
         me.trafficLayer.setMode(viewMode, searchMode);
@@ -3082,6 +3234,267 @@ export default class extends Evented {
         me.updateEcoButton(mode);
         me.ecoMode = mode;
         me.fire({type: 'ecomode', mode});
+    }
+
+    _setTransitMode(mode) {
+        const me = this,
+            {map, trafficLayer, markedObject, trackedObject} = me,
+            trainsVisible = mode === 'normal',
+            tracksVisible = mode !== 'map-only',
+            visibility = tracksVisible ? 'visible' : 'none';
+
+        if (me.transitMode === mode || !helpers.includes(['normal', 'no-trains', 'map-only'], mode)) {
+            return;
+        }
+
+        // Objects that are about to disappear can no longer be selected
+        const hidesTrain = !trainsVisible && (isTrain(markedObject) || isTrain(trackedObject)),
+            hidesStation = !tracksVisible && (isStation(markedObject) || isStation(trackedObject));
+
+        if (hidesTrain || hidesStation) {
+            me.markObject();
+            me.trackObject();
+        }
+
+        me.updateTransitButtons(mode);
+        me.transitMode = mode;
+        me.hoverRailway();
+
+        trafficLayer.setTrainVisibility(trainsVisible);
+        for (const key of ['railways', 'stations', 'stations-outline']) {
+            me.setLayerVisibility(`${key}-og-${me.layerZoom}`, visibility);
+        }
+        for (const zoom of [13, 14, 15, 16, 17, 18]) {
+            for (const key of ['railways', 'stations']) {
+                helpersMapbox.setLayerProps(map, `${key}-ug-${zoom}`, {visible: tracksVisible});
+            }
+        }
+        me.updateAdTrainPopup();
+        map.triggerRepaint();
+        me.fire({type: 'transitmode', mode});
+    }
+
+    _setBoulangerieVisibility(visible) {
+        const me = this,
+            button = me.container.querySelector('.mapboxgl-ctrl-boulangerie');
+
+        if (me.boulangerieVisible === visible) {
+            return;
+        }
+        me.boulangerieVisible = visible;
+        if (button) {
+            button.title = me.dict[visible ? 'hide-boulangeries' : 'show-boulangeries'];
+            button.setAttribute('aria-label', button.title);
+            button.classList.toggle('mapboxgl-ctrl-boulangerie-active', visible);
+        }
+
+        me.hideBoulangeriePopup();
+        for (const shop of boulangeries) {
+            let marker = me.boulangerieMarkers.get(shop.id);
+
+            if (!marker) {
+                marker = new Marker({
+                    element: helpers.createElement('div', {
+                        className: 'boulangerie-marker',
+                        innerHTML: `<span class="boulangerie-halo"></span>${FLAG_SVG}`
+                    }),
+                    offset: [0, -22]
+                })
+                    .setLngLat(shop.coord)
+                    .on('mouseenter', () => me.showBoulangeriePopup(shop))
+                    .on('mouseleave', () => me.hideBoulangeriePopup())
+                    .on('click', () => me.showBoulangeriePanel(shop));
+                me.boulangerieMarkers.set(shop.id, marker);
+            }
+            if (visible) {
+                marker.addTo(me);
+            } else {
+                marker.remove();
+            }
+        }
+    }
+
+    showBoulangeriePopup(shop) {
+        const me = this,
+            below = [0, 10],
+            above = [0, -46];
+
+        // The marker swallows the mouse events of the map, so clear what the map was showing
+        me.hoverRailway();
+        me.markObject();
+        me.hideBoulangeriePopup();
+        me.boulangeriePopup = new AnimatedPopup({
+            className: 'popup-object popup-boulangerie',
+            closeButton: false,
+            closeOnClick: false,
+            maxWidth: '320px',
+            offset: {
+                'top': below,
+                'top-left': below,
+                'top-right': below,
+                'bottom': above,
+                'bottom-left': above,
+                'bottom-right': above,
+                'left': [10, -20],
+                'right': [-10, -20]
+            }
+        }).setLngLat(shop.coord).setHTML(getBoulangeriePopupHTML(me, shop)).addTo(me.map);
+    }
+
+    hideBoulangeriePopup() {
+        const me = this;
+
+        if (me.boulangeriePopup) {
+            me.boulangeriePopup.remove();
+            delete me.boulangeriePopup;
+        }
+    }
+
+    showBoulangeriePanel(shop) {
+        const me = this;
+
+        me.hideBoulangeriePopup();
+        if (me.boulangeriePanel && me.boulangeriePanel.isOpen()) {
+            me.boulangeriePanel.remove();
+        }
+        me.boulangeriePanel = new BoulangeriePanel({object: shop});
+        me.boulangeriePanel.addTo(me);
+    }
+
+    _setTheme(theme) {
+        const me = this,
+            {map, container} = me,
+            button = container.querySelector('.mapboxgl-ctrl-theme'),
+            isBlue = theme === 'blue';
+
+        if (me.theme === theme || !helpers.includes(['default', 'blue'], theme)) {
+            return;
+        }
+        me.theme = theme;
+        container.classList.toggle('blue-theme', isBlue);
+        if (button) {
+            button.title = me.dict[isBlue ? 'exit-blue-theme' : 'enter-blue-theme'];
+            button.setAttribute('aria-label', button.title);
+            button.classList.toggle('mapboxgl-ctrl-theme-active', isBlue);
+        }
+
+        // Light the map for the new theme right away, instead of waiting for the next
+        // refresh, and record it so that the refresh does not repeat it
+        const now = me.clock.getTime();
+
+        helpersMapbox.setSunlight(map, now, me.viewMode === 'ground' ? 1 : 0, false, true, theme);
+        me.lastSunlightCenter = map.getCenter();
+        me.lastSunlightTime = now;
+        me.lastSunlightRefresh = Date.now();
+        map.triggerRepaint();
+        me.fire({type: 'theme', theme});
+    }
+
+    _setBiryaniVisibility(visible) {
+        const me = this,
+            button = me.container.querySelector('.mapboxgl-ctrl-biryani');
+
+        if (me.biryaniVisible === visible) {
+            return;
+        }
+        me.biryaniVisible = visible;
+        if (button) {
+            button.title = me.dict[visible ? 'hide-biryani' : 'show-biryani'];
+            button.setAttribute('aria-label', button.title);
+            button.classList.toggle('mapboxgl-ctrl-biryani-active', visible);
+        }
+
+        me.hideBiryaniPopup();
+        for (const place of biryaniPlaces) {
+            let marker = me.biryaniMarkers.get(place.id);
+
+            if (!marker) {
+                marker = new Marker({
+                    element: helpers.createElement('div', {
+                        className: 'biryani-marker',
+                        innerHTML: `<span class="biryani-halo"></span>${INDIA_FLAG_SVG}`
+                    }),
+                    offset: [0, -22]
+                })
+                    .setLngLat(place.coord)
+                    .on('mouseenter', () => me.showBiryaniPopup(place))
+                    .on('mouseleave', () => me.hideBiryaniPopup())
+                    .on('click', () => me.showBiryaniPanel(place));
+                me.biryaniMarkers.set(place.id, marker);
+            }
+            if (visible) {
+                marker.addTo(me);
+            } else {
+                marker.remove();
+            }
+        }
+    }
+
+    showBiryaniPopup(place) {
+        const me = this,
+            below = [0, 10],
+            above = [0, -46];
+
+        // The marker swallows the mouse events of the map, so clear what the map was showing
+        me.hoverRailway();
+        me.markObject();
+        me.hideBoulangeriePopup();
+        me.hideBiryaniPopup();
+        me.biryaniPopup = new AnimatedPopup({
+            className: 'popup-object popup-biryani',
+            closeButton: false,
+            closeOnClick: false,
+            maxWidth: '320px',
+            offset: {
+                'top': below,
+                'top-left': below,
+                'top-right': below,
+                'bottom': above,
+                'bottom-left': above,
+                'bottom-right': above,
+                'left': [10, -20],
+                'right': [-10, -20]
+            }
+        }).setLngLat(place.coord).setHTML(getBiryaniPopupHTML(me, place)).addTo(me.map);
+    }
+
+    hideBiryaniPopup() {
+        const me = this;
+
+        if (me.biryaniPopup) {
+            me.biryaniPopup.remove();
+            delete me.biryaniPopup;
+        }
+    }
+
+    showBiryaniPanel(place) {
+        const me = this;
+
+        me.hideBiryaniPopup();
+        if (me.biryaniPanel && me.biryaniPanel.isOpen()) {
+            me.biryaniPanel.remove();
+        }
+        me.biryaniPanel = new BiryaniPanel({object: place});
+        me.biryaniPanel.addTo(me);
+    }
+
+    updateTransitButtons(mode) {
+        const {container, dict} = this;
+
+        for (const {className, target, showTitle, hideTitle} of [
+            {className: 'mapboxgl-ctrl-no-trains', target: 'no-trains', showTitle: 'show-trains', hideTitle: 'hide-trains'},
+            {className: 'mapboxgl-ctrl-map-only', target: 'map-only', showTitle: 'show-transit', hideTitle: 'hide-transit'}
+        ]) {
+            const button = container.querySelector(`.${className}`);
+
+            if (button) {
+                const active = mode === target;
+
+                button.title = dict[active ? showTitle : hideTitle];
+                button.setAttribute('aria-label', button.title);
+                button.classList.toggle(`${className}-active`, active);
+            }
+        }
     }
 
     onClockChange() {
@@ -3384,11 +3797,196 @@ export default class extends Evented {
         me.updateAdTrainPopup();
     }
 
+    loadRailwayInfo() {
+        const me = this;
+
+        if (!me.dataUrl) {
+            return;
+        }
+        loadRailwayInfo(me.dataUrl).then(info => {
+            for (const id of Object.keys(info)) {
+                const railway = me.railways.get(id);
+
+                if (railway) {
+                    railway.info = info[id];
+                }
+            }
+            if (me.railwayPopup && me.hoveredRailway) {
+                me.railwayPopup.setHTML(me.getRailwayPopupHTML(me.hoveredRailway));
+            }
+        }).catch(() => {
+            // Data sources without railway information simply show fewer details
+        });
+    }
+
+    loadStationInfo() {
+        const me = this;
+
+        if (!me.dataUrl) {
+            return;
+        }
+        loadStationInfo(me.dataUrl).then(info => {
+            for (const station of me.stations.getAll()) {
+                // A hand-written history that comes with the station data has priority
+                const history = station.history || (station.group && info[station.group.replace(/\.(?:og|ug)$/, '')]);
+
+                if (history) {
+                    station.history = history;
+                }
+            }
+        }).catch(() => {
+            // Data sources without station histories simply have no history to show
+        });
+    }
+
+    getRailwayHistory(railway) {
+        return railway.history || (railway.info && railway.info.history);
+    }
+
+    hasRailwayDetails(railway) {
+        return !!(this.getRailwayHistory(railway) || (railway.info && (railway.info.length || railway.info.opened)));
+    }
+
+    getRailwayFactsHTML(railway) {
+        const me = this,
+            {lang, dict} = me,
+            info = railway.info || {},
+            stations = railway.stations.filter(station => !station.alternate),
+            first = stations[0],
+            last = stations[stations.length - 1],
+            rows = [];
+
+        if (first) {
+            rows.push([dict['first-station'], me.getLocalizedStationTitle(first)]);
+            rows.push([dict['last-station'], `${me.getLocalizedStationTitle(last)}${first === last ? ` (${dict['loop-line']})` : ''}`]);
+        }
+        if (info.length) {
+            const wikiTitle = info.part && info.wiki && info.wiki[[lang, 'en', 'ja'].find(l => info.wiki[l])],
+                note = wikiTitle ? ` <span class="railway-fact-note">(${dict['entire-line'].replace('$1', wikiTitle)})</span>` : '';
+
+            rows.push([dict['line-length'], `${info.length.toLocaleString(lang, {maximumFractionDigits: 2})} km${note}`]);
+        }
+        if (info.opened) {
+            rows.push([dict['opened'], me.formatOpened(info.opened)]);
+        }
+        return [
+            '<div class="railway-facts">',
+            rows.map(([label, value]) => `<div class="railway-fact"><span class="railway-fact-label">${label}</span><span class="railway-fact-value">${value}</span></div>`).join(''),
+            '</div>'
+        ].join('');
+    }
+
+    formatOpened(opened) {
+        const [year, month, day] = opened.split('-').map(Number),
+            options = {timeZone: 'UTC', year: 'numeric'};
+
+        if (month) {
+            options.month = 'long';
+        }
+        if (day) {
+            options.day = 'numeric';
+        }
+        try {
+            return new Intl.DateTimeFormat(this.lang, options).format(new Date(Date.UTC(year, (month || 1) - 1, day || 1)));
+        } catch (e) {
+            return opened;
+        }
+    }
+
+    getRailwayPopupHTML(railway) {
+        const {lang, dict} = this,
+            history = this.getRailwayHistory(railway);
+
+        return [
+            '<div class="railway-popup-title">',
+            `<span class="railway-title-strip" style="background-color: ${railway.color};"></span>`,
+            `<strong>${this.getLocalizedRailwayTitle(railway)}</strong>`,
+            '</div>',
+            this.getRailwayFactsHTML(railway),
+            history ? `<div class="railway-popup-history">${getHistoryHTML(history, lang, dict, 3)}</div>` : '',
+            this.hasRailwayDetails(railway) ? `<div class="railway-popup-hint">${dict['click-for-details']}</div>` : ''
+        ].join('');
+    }
+
+    // Returns the railway drawn under the given screen point. Only the layer that
+    // is prominent in the current view mode is examined, because the other one
+    // is drawn faintly and is not meant to be hovered.
+    pickRailway(point) {
+        const me = this,
+            {map, layerZoom, viewMode, searchMode, transitMode} = me,
+            radius = 6;
+        let feature;
+
+        if (transitMode === 'map-only' || (searchMode !== 'none' && searchMode !== 'edit')) {
+            return;
+        }
+        if (viewMode === 'underground') {
+            feature = pickObject(map.__deck, `railways-ug-${layerZoom}`, point, radius);
+        } else {
+            feature = map.queryRenderedFeatures(
+                [[point.x - radius, point.y - radius], [point.x + radius, point.y + radius]],
+                {layers: [`railways-og-${layerZoom}`]}
+            )[0];
+        }
+        if (feature && feature.properties.section) {
+            return me.railways.get(feature.properties.section.replace(/\.\d+$/, ''));
+        }
+    }
+
+    hoverRailway(railway, lngLat) {
+        const me = this,
+            map = me.map;
+
+        if (!railway) {
+            if (me.railwayPopup) {
+                me.railwayPopup.remove();
+                delete me.railwayPopup;
+                delete me.hoveredRailway;
+                map.getCanvas().style.cursor = '';
+            }
+            return;
+        }
+
+        if (me.hoveredRailway !== railway) {
+            if (me.railwayPopup) {
+                me.railwayPopup.remove();
+            }
+            me.hoveredRailway = railway;
+            me.railwayPopup = new AnimatedPopup({
+                className: 'popup-object popup-railway',
+                closeButton: false,
+                closeOnClick: false,
+                maxWidth: '320px',
+                offset: 14
+            }).setLngLat(lngLat).setHTML(me.getRailwayPopupHTML(railway)).addTo(map);
+            map.getCanvas().style.cursor = me.hasRailwayDetails(railway) ? 'pointer' : '';
+        }
+        me.railwayPopup.setLngLat(lngLat);
+    }
+
+    showRailwayPanel(railway) {
+        const me = this;
+
+        me.hoverRailway();
+        if (me.railwayPanel && me.railwayPanel.isOpen()) {
+            me.railwayPanel.remove();
+        }
+        me.railwayPanel = new RailwayPanel({object: railway});
+        me.railwayPanel.addTo(me);
+    }
+
     updateAdTrainPopup() {
         const me = this,
             markedObject = me.markedObject;
 
         for (const train of me.adTrains) {
+            if (me.transitMode !== 'normal') {
+                if (train.popupVisible) {
+                    train.popup.remove();
+                    delete train.popupVisible;
+                }
+                continue;
+            }
             train.popup.setLngLat(me.adjustCoord(train.coord, train.altitude));
             if (train !== markedObject && !train.popupVisible) {
                 train.popup.addTo(me.map);
@@ -3926,6 +4524,10 @@ function getLayerZoom(zoom) {
 
 function isVehicle(object) {
     return object && helpers.includes(['train', 'flight', 'bus'], object.type);
+}
+
+function isTrain(object) {
+    return object && object.type === 'train';
 }
 
 function isStation(object) {

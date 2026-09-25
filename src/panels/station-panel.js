@@ -6,6 +6,7 @@ import {createElement, getTimeOffset, getTimeString, includes, loadJSON} from '.
 import {emptyFeatureCollection, featureFilter} from '../helpers/helpers-geojson';
 import {getBounds, setLayerProps} from '../helpers/helpers-mapbox';
 import Panel from './panel';
+import StationHistoryPanel from './station-history-panel';
 
 const MODE_CLASSES = ['station-departure', 'station-to', 'station-from', 'station-exits', 'station-searching', 'station-routes', 'station-noroute'];
 
@@ -24,6 +25,7 @@ export default class extends Panel {
             mode = options.mode || 'departure',
             departures = me._departures = [],
             exits = me._exits = [].concat(...stations.map(station => station.exit || [])),
+            history = stations.map(station => station.history).find(history => history),
             pitch = map.getPitch(),
             {lang, dict, clock} = map,
             date = clock.getDate(),
@@ -115,6 +117,12 @@ export default class extends Panel {
                     `<label for="station-exits-button">${dict['exits']}</label>`,
                     '</span>'
                 ].join('') : '',
+                history ? [
+                    '<span>',
+                    '<input id="station-history-button" type="radio" name="station">',
+                    `<label for="station-history-button">${dict['history']}</label>`,
+                    '</span>'
+                ].join('') : '',
                 '</div>',
                 '</div>',
                 `<div id="station-title-searching">${dict['route-search']}</div>`,
@@ -174,14 +182,35 @@ export default class extends Panel {
         container.classList.add(`station-${mode}`);
         container.querySelector(`#station-${mode}-button`).checked = true;
 
-        for (const key of ['station-departure', 'station-to', 'station-from', 'station-exits']) {
+        for (const key of ['station-departure', 'station-to', 'station-from', 'station-exits', 'station-history']) {
             const buttonElement = container.querySelector(`#${key}-button`);
 
             if (buttonElement) {
                 buttonElement.addEventListener('click', () => {
                     const classList = container.classList;
 
-                    if (!classList.contains(key)) {
+                    if (key === 'station-history') {
+                        // The history opens in a large modal panel instead of in this one,
+                        // so the tab that was showing stays selected
+                        const current = MODE_CLASSES.find(className => classList.contains(className)),
+                            currentButton = current && container.querySelector(`#${current}-button`);
+
+                        if (currentButton) {
+                            currentButton.checked = true;
+                        }
+                        if (me._historyPanel && me._historyPanel.isOpen()) {
+                            me._historyPanel.remove();
+                        }
+                        // The modal is translucent, so this panel is hidden behind it, or its
+                        // text would show through
+                        classList.add('behind-modal');
+                        me._historyPanel = new StationHistoryPanel({
+                            object: stations,
+                            history,
+                            onRemove: () => classList.remove('behind-modal')
+                        });
+                        me._historyPanel.addTo(map);
+                    } else if (!classList.contains(key)) {
                         classList.remove(...MODE_CLASSES);
                         classList.add(key);
                         if (key === 'station-to') {

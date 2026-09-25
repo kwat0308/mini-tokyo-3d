@@ -136,3 +136,9 @@ Icon | Description
 ::: warning
 As of the version 4.0, only subway lines and underground stations are supported for displaying station exit information.
 :::
+
+## Displaying Station History
+
+With a station selected, click or tap the “History” button below the station name at the bottom of the screen to open a large panel with the history of the station, such as when it opened, when it was renamed or rebuilt, and how the operators and lines that use it changed. The station information at the bottom of the screen remains as it was, and it comes back when you close the history panel with the “×” icon button or by clicking or tapping outside of the panel. The “History” button only appears for a station that has a history.
+
+The history is summarized from Wikipedia (CC BY-SA), and the link to the article it comes from is shown at the bottom of the panel. It is available in Japanese and English; in other languages, the English text is shown.

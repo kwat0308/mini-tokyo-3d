@@ -1,0 +1,63 @@
+{
+    "JR-East.Yamanote": {
+        "en": [
+            "Traces to March 1, 1885, when the Nippon Railway opened a line between Shinagawa and Akabane; the section between Ikebukuro and Tabata opened in 1903, and the two were merged as the \"Yamanote Line\" in 1909.",
+            "The loop was completed on November 1, 1925, with the electrified Kanda–Ueno link providing a route through central Tokyo via Tokyo Station.",
+            "Prewar rules barring private railways from crossing the loop into central Tokyo forced them to terminate at Yamanote Line stations, spurring the growth of satellite hubs like Shinjuku and Ikebukuro into today's busiest stations in the world.",
+            "Separated from the Keihin-Tōhoku Line onto its own dedicated tracks on November 19, 1956, giving the Yamanote Line the independent loop service it retains today.",
+            "Gained its first new station in nearly 50 years when Takanawa Gateway opened on March 14, 2020, built on former railyard land between Shinagawa and Tamachi.",
+            "Marked 100 years of loop operation in 2025, with commemorative train liveries recalling the historic 103 and 205 series trains."
+        ],
+        "ja": [
+            "1885年3月1日、日本鉄道が品川〜赤羽間を開業したことに始まる。1903年に池袋〜田端間が開業し、1909年に両線が統合されて「山手線」と命名された。",
+            "1925年11月1日、神田〜上野間の電化区間が開業し、東京駅を経由して都心を貫くルートが完成、環状運転が実現した。",
+            "戦前、私鉄が都心へ乗り入れることが認められなかったため、私鉄各社は山手線の駅で折り返す構造となり、新宿・池袋などが副都心として発展し、現在は世界有数の乗降客数を誇る駅となった。",
+            "1956年11月19日、京浜東北線と線路が分離され、山手線として独立した環状運転区間を持つようになった。",
+            "2020年3月14日、品川〜田町間の旧操車場跡地に高輪ゲートウェイ駅が開業した。約50年ぶりの新駅だった。",
+            "2025年に環状運転開始100周年を迎え、103系・205系をモチーフにした記念デザイン列車が運行された。"
+        ],
+        "source": "https://en.wikipedia.org/wiki/Yamanote_Line",
+        "sourceTitle": "Wikipedia",
+        "updated": "2026-09-23"
+    },
+    "TokyoMetro.Ginza": {
+        "en": [
+            "Conceived by businessman Noritsugu Hayakawa after he observed the London Underground in 1914; construction by the Tokyo Underground Railway began in 1925.",
+            "The Ueno–Asakusa section opened December 30, 1927 — Asia's first subway line — and was so popular that riders sometimes waited over two hours for a five-minute trip.",
+            "Reached its originally planned Shimbashi terminus in 1934; the separately built Tokyo Rapid Railway extended service from Shibuya to Shimbashi by 1939, and the two operators began through-service that year before formally merging as the Teito Rapid Transit Authority (Eidan) in 1941.",
+            "Suffered direct bomb damage at Ginza and Kyōbashi stations during a January 1945 air raid, which also flooded the Nihonbashi–Shimbashi tunnel section.",
+            "Took its present \"Ginza Line\" name in 1953 to distinguish it from the newly built Marunouchi Line, and passed from the Teito Rapid Transit Authority to the newly formed Tokyo Metro in 2004."
+        ],
+        "ja": [
+            "1914年にロンドン地下鉄を視察した実業家・早川徳次の構想により、1925年に東京地下鉄道が建設に着手した。",
+            "1927年12月30日、上野〜浅草間が開業した。アジア初の地下鉄となり、開業当初はわずか5分の乗車のために2時間以上並ぶほどの人気ぶりだった。",
+            "1934年に当初の計画区間であった新橋まで到達。渋谷から建設を進めていた東京高速鉄道も1939年に新橋まで延伸して同年に相互直通運転を開始し、1941年には両社が統合されて帝都高速度交通営団(営団地下鉄)が発足した。",
+            "1945年1月の空襲で銀座駅・京橋駅が直撃を受け、日本橋〜新橋間のトンネルが浸水する被害も出た。",
+            "1953年、新設された丸ノ内線と区別するため現在の「銀座線」の名称が用いられるようになり、2004年の営団民営化により東京メトロに継承された。"
+        ],
+        "source": "https://en.wikipedia.org/wiki/Tokyo_Metro_Ginza_Line",
+        "sourceTitle": "Wikipedia",
+        "updated": "2026-09-23"
+    },
+    "JR-East.ChuoRapid": {
+        "en": [
+            "Traces to the Kōbu Railway, which opened Shinjuku–Tachikawa on April 11, 1889, and Tachikawa–Hachiōji later that year; the line was nationalized in 1906 and took the Chūō Line name.",
+            "Extended east into central Tokyo in stages, reaching Ochanomizu in 1904 and its current Tokyo Station terminus in 1919.",
+            "Introduced \"rapid\" express service in 1933, and gained its trademark orange-vermillion livery with the 101 series EMUs introduced from 1957.",
+            "Became notorious for extreme overcrowding in the postwar decades — reported at up to 300% capacity — earning the grim nickname \"Murder Line,\" which spurred JNR's quadruple-tracking and grade-separation projects through the 1960s.",
+            "Completed a major grade-separation project between Mitaka and Tachikawa in 2010, eliminating numerous level crossings along a 9km stretch.",
+            "Has one of the JR East network's highest rates of platform accidents, prompting an ongoing program to install platform screen doors by fiscal year 2032."
+        ],
+        "ja": [
+            "甲武鉄道が1889年4月11日に新宿〜立川間、同年内に立川〜八王子間を開業したことに始まる。1906年の国有化により「中央線」の名称となった。",
+            "都心方面へ段階的に延伸し、1904年にお茶の水、1919年に現在の東京駅まで到達した。",
+            "1933年に急行(後の快速)運転を開始した。1957年から投入された101系電車により、中央線の象徴となる朱色(オレンジバーミリオン)の車体色が定着した。",
+            "戦後は最大300%ともいわれる激しい混雑で知られ、「殺人電車」の異名を取った。これを受け国鉄は1960年代にかけて複々線化・立体交差化を進めた。",
+            "三鷹〜立川間の連続立体交差事業が2010年に完成し、約9kmの区間にあった多数の踏切が解消された。",
+            "JR東日本の路線の中でも人身事故の発生率が高いことで知られ、2032年度までに順次ホームドアを設置する計画が進められている。"
+        ],
+        "source": "https://en.wikipedia.org/wiki/Ch%C5%AB%C5%8D_Rapid_Line",
+        "sourceTitle": "Wikipedia",
+        "updated": "2026-09-23"
+    }
+}

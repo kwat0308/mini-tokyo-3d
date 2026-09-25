@@ -85,6 +85,30 @@ export function loadStaticData(dataUrl, clock) {
 }
 
 /**
+ * Loads the railway information (length, opening date and construction history).
+ * It is loaded separately from the static data because it is large and only
+ * needed once the user hovers over a railway.
+ * @param {string} dataUrl - Data URL
+ * @returns {Promise} Promise that resolves to the railway information keyed by
+ *     railway ID
+ */
+export function loadRailwayInfo(dataUrl) {
+    return loadJSON(`${dataUrl}/railway-info.json.gz`);
+}
+
+/**
+ * Loads the histories of the stations. They are loaded separately from the
+ * static data because they are large and only needed once the user opens the
+ * history of a station.
+ * @param {string} dataUrl - Data URL
+ * @returns {Promise} Promise that resolves to the histories keyed by station
+ *     group ID
+ */
+export function loadStationInfo(dataUrl) {
+    return loadJSON(`${dataUrl}/station-info.json.gz`);
+}
+
+/**
  * Load the timetable data.
  * @param {string} dataUrl - Data URL
  * @param {Clock} clock - Clock object representing the current time

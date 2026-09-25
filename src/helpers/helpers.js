@@ -231,6 +231,19 @@ export function createElement(tagName, attributes, container) {
 }
 
 /**
+ * Escapes the characters that are special in HTML.
+ * @param {string} text - The text to escape
+ * @returns {string} The escaped text
+ */
+export function escapeHTML(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+/**
  * Shows notification message.
  * @param {Node} container - Node in which the notification panel is shown
  * @param {string} message - Notification message

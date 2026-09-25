@@ -53,12 +53,19 @@ Click or tap the fullscreen button | Toggle the fullscreen mode
 Click or tap the eye button | Toggle the underground mode
 Click or tap the playback button | Toggle the playback mode
 Click or tap the battery button | Toggle the eco mode
+Click or tap the crossed-out train button | Hide/show the trains
+Click or tap the map button | Hide/show the trains and tracks (map only)
+Click or tap the baguette button | Show/hide the French bakeries
+Click or tap the biryani button | Show/hide the biryani restaurants
+Click or tap the moon button (bottom right) | Switch between the default and the blue theme
 Click or tap the layer button | Show/hide the layer display settings panel
 Click or tap the camera button | Show/hide the tracking mode settings panel
 Click or tap the info button | Show/hide the app info panel
 Click or tap a train/aircraft/station | Enable tracking or select station
 Click or tap the map | Disable tracking or deselect station
 Hover a train/aircraft/station | Show the train/aircraft/station information
+Hover a railway track | Show the line's stations, length, opening date and construction history
+Click or tap a railway track | Show the full construction history of the line
 
 ## Language Support
 

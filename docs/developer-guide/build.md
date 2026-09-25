@@ -49,6 +49,46 @@ npm run build-all
 
 When the build completes successfully, the `dist` directory will be created. It includes the style sheet, JavaScript files, and the `assets` directory (containing the map style and localization dictionaries) for distribution. The `build` directory will also be created at the same time. It contains all the files needed for deployment on your web site.
 
+## Updating the Railway Information
+
+The length, opening date and construction history that appear when hovering over a railway track are stored in `data/railway-info.json`. They are collected from Wikipedia (the text is licensed under CC BY-SA and is credited in the app), and the file is committed to the repository, so the regular build does not need network access for it.
+
+To refresh it, run the following command. It takes a few minutes, and can be limited to specific railways by appending their IDs.
+
+```bash
+npm run fetch-railway-info
+npm run fetch-railway-info -- JR-East.Yamanote Toei.Asakusa
+```
+
+Each railway is matched to a Japanese Wikipedia article automatically, and a match is accepted only if the article mentions the railway's stations. Railways that cannot be matched are listed when the command finishes. Add them to `data/railway-wikipedia.json` by hand, which always takes priority over the automatic match.
+
+```json
+{"Odakyu.Odawara": {"ja": "小田急小田原線", "en": "Odakyu Odawara Line"}}
+```
+
+A hand-written history in `data/railway-history.json` takes priority over the text collected from Wikipedia.
+
+## Updating the Station Histories
+
+The history that opens when you click "History" in the station panel is stored in `data/station-info.json`. Like the railway information, it is collected from Wikipedia (CC BY-SA, credited in the app) and the file is committed to the repository, so the regular build does not need network access for it. Stations that share one physical station are handled as a group, which is identified by the ID of its first station, as in `data/station-groups.json`.
+
+To refresh it, run the following command. It takes around 15 minutes, and can be limited to specific station groups by appending their IDs. Add `--cache=FILE` to keep the downloaded article text, so that a rerun (after changing how the text is condensed, for example) only has to parse it.
+
+```bash
+npm run fetch-station-history
+npm run fetch-station-history -- JR-East.ChuoRapid.Koenji Toei.Shinjuku.Kikukawa
+```
+
+The article of each group is found through the Wikipedia titles in `data/stations.json`, and it is only accepted when its coordinates lie next to the station, so a station of the same name elsewhere in Japan is never picked up by mistake. From the Japanese article, the dated entries of the history section are condensed into a few bullets: openings, renamings, relocations, reconstructions, wartime damage and changes of operator are kept, and routine changes such as ticket gates and IC cards are dropped. When a station is used by several operators, the history of the first one is used. From the English article, the first few sentences of the history section that contain a year are used.
+
+A group whose article cannot be matched simply has no history. Add its article titles by hand to `data/station-wikipedia.json`, which always takes priority over the automatic match, or add `"skip": true` to leave a group out.
+
+```json
+{"TokyoMetro.Chiyoda.Otemachi": {"ja": "大手町駅 (東京都)", "en": "Ōtemachi Station (Tokyo)"}}
+```
+
+A hand-written history in `data/station-history.json` takes priority over the text collected from Wikipedia.
+
 ## Development Server
 
 While working on the source code, you can run a development server that builds an unminified bundle with source maps, serves it locally, and rebuilds it whenever a file changes. This is more convenient than running `npm run build-all` after every edit.
